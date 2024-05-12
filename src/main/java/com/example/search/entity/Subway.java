@@ -23,10 +23,23 @@ public class Subway {
 
     private String routeName;
 
+    private Double latitude;
+
+    private Double longitude;
+
     @Builder
     public Subway(String subwayId, String name, String routeName) {
         this.subwayId = subwayId;
         this.name = name;
         this.routeName = routeName;
+    }
+
+    @Builder
+    public Subway(String subwayId, String name, String routeName, Double latitude, Double longitude) {
+        this.subwayId = subwayId;
+        this.name = name;
+        this.routeName = routeName;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 }

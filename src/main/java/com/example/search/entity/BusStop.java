@@ -21,9 +21,21 @@ public class BusStop {
 
     private Integer cityCode;
 
+    private Double latitude;
+
+    private Double longitude;
+
     @Builder
     public BusStop(String nodeId, int cityCode) {
         this.nodeId = nodeId;
         this.cityCode = cityCode;
+    }
+
+    @Builder
+    public BusStop(String nodeId, int cityCode, Double latitude, Double longitude) {
+        this.nodeId = nodeId;
+        this.cityCode = cityCode;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 }

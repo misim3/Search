@@ -21,12 +21,25 @@ public class Car {
 
     private String endNodeId;
 
-    private double time;
+    private Double time;
+
+    private Double longitude;
+
+    private Double latitude;
 
     @Builder
-    public Car(String startNodeId, String endNodeId, double time) {
+    public Car(String startNodeId, String endNodeId, Double time) {
         this.startNodeId = startNodeId;
         this.endNodeId = endNodeId;
         this.time = time;
+    }
+
+    @Builder
+    public Car(String startNodeId, String endNodeId, Double time, Double longitude, Double latitude) {
+        this.startNodeId = startNodeId;
+        this.endNodeId = endNodeId;
+        this.time = time;
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
 }
