@@ -1,5 +1,6 @@
 package com.example.search.service;
 
+import com.example.search.domain.car.CGraph;
 import com.example.search.domain.car.CLink;
 import com.example.search.domain.car.CNode;
 import com.example.search.entity.Car;
@@ -12,35 +13,11 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
-public class SearchCar {
+public class CarService {
 
     private final CarRepository carRepository;
 
-    private class Graph {
-        Map<String, CNode> nodes;
-
-        public Graph() {
-            this.nodes = new HashMap<>();
-        }
-    }
-
-    private class NodeQ implements Comparable<NodeQ> {
-        String id;
-        double time;
-
-        public NodeQ(String id, double time) {
-            this.id = id;
-            this.time = time;
-        }
-
-        @Override
-        public int compareTo(NodeQ other) {
-            return Double.compare(this.time, other.time);
-        }
-    }
-
-    // 도착 가능한 지점 탐색:
-    
+    // 도착 가능한 지점 탐색만
     public void search() {
         long s1 = System.nanoTime();
         Graph graph = makeGraph();
@@ -60,20 +37,20 @@ public class SearchCar {
         System.out.println("중간지점 탐색 시간 : " + TimeUnit.SECONDS.convert(e2-s2, TimeUnit.NANOSECONDS) + "초");
     }
 
-    private Graph makeGraph() {
-        Graph graph = new Graph();
+    public CGraph makeGraph() {
+        CGraph graph = new CGraph();
 
         List<Car> carList = carRepository.findAll();
 
         for (Car car : carList) {
             CNode cNode;
 
-            if (!graph.nodes.containsKey(car.getStartNodeId())) {
+            if (!graph.getNodes().containsKey(car.getStartNodeId())) {
                 cNode = CNode.builder()
                         .nodeId(car.getStartNodeId())
                         .build();
             } else {
-                cNode = graph.nodes.get(car.getStartNodeId());
+                cNode = graph.getNodes().get(car.getStartNodeId());
             }
 
             CLink cLink = CLink.builder()
@@ -83,7 +60,7 @@ public class SearchCar {
 
             cNode.addLink(cLink);
 
-            graph.nodes.put(car.getStartNodeId(), cNode);
+            graph.getNodes().put(car.getStartNodeId(), cNode);
         }
 
         return graph;

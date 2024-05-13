@@ -1,5 +1,6 @@
 package com.example.search.service;
 
+import com.example.search.domain.publicTransit.subway.SGraph;
 import com.example.search.domain.publicTransit.subway.SLink;
 import com.example.search.domain.publicTransit.subway.SNode;
 import com.example.search.entity.Subway;
@@ -12,39 +13,11 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
-public class SearchSubway {
+public class SubwayService {
 
     private final SubwayRepository subwayRepository;
 
-    private class Graph {
-
-        Map<String, SNode> subways;
-
-        public Graph() {
-            this.subways = new HashMap<>();
-        }
-    }
-
-    private class NodeQ implements Comparable<NodeQ> {
-
-        String id;
-
-        double time;
-
-        String routeName;
-
-        public NodeQ(String id, double time, String routeName) {
-            this.id = id;
-            this.time = time;
-            this.routeName = routeName;
-        }
-
-        @Override
-        public int compareTo(NodeQ other) {
-            return Double.compare(this.time, other.time);
-        }
-    }
-
+    // 도착 가능한 지점 탐색만
     public void search() {
         long s1 = System.nanoTime();
         Graph graph = makeGraph();
@@ -65,20 +38,20 @@ public class SearchSubway {
 
     }
 
-    private Graph makeGraph() {
-        Graph graph = new Graph();
+    public SGraph makeGraph() {
+        SGraph graph = new SGraph();
 
         List<Subway> subways = subwayRepository.findAll();
 
         for (Subway subway : subways) {
             SNode sNode;
 
-            if (!graph.subways.containsKey(subway.getSubwayId())) {
+            if (!graph.getSubways().containsKey(subway.getSubwayId())) {
                 sNode = SNode.builder()
                         .subwayId(subway.getSubwayId())
                         .subwayRouteName(subway.getRouteName()).build();
             } else {
-                sNode = graph.subways.get(subway.getSubwayId());
+                sNode = graph.getSubways().get(subway.getSubwayId());
             }
 
             SLink sLink = SLink.builder()
@@ -89,48 +62,48 @@ public class SearchSubway {
 
             sNode.addLink(sLink);
 
-            graph.subways.put(subway.getSubwayId(), sNode);
+            graph.getSubways().put(subway.getSubwayId(), sNode);
         }
 
         return graph;
     }
 
     private List<String> findMidSubway(List<String> startNodes, Graph graph) {
-//        Set[] endNodes = new Set[startNodes.size()];
-//
-//        // 선언된 변수 초기화
-//        for (int j = 0; j < startNodes.size(); j++) {
-//            endNodes[j] = new HashSet<>();
-//        }
-//
-//        // 이동시간 변수 추가 및 초기화
-//        double timeLimit = 0;
-//
-//        List<String> intersectionNodes = new ArrayList<>(); // 동일한 이동 시간을 갖는 노드들의 교집합
-//
-//        // 반복문의 조건을 교집합의 존재 여부로 변경
-//        while (intersectionNodes.isEmpty()) {
-//
-//            // 이동시간을 10씩 키우며 노드를 탐색
-//            timeLimit += 60 * 10;
-//
-//            for (int j = 0; j < startNodes.size(); j++) {
-//                String startNodeId = startNodes.get(j);
-//
-//                // 도착할 수 있는 노드들을 찾는 함수 호출
-//                Set<String> reachableNodes = findReachableNodes(startNodeId, graph, timeLimit);
-//
-//                // 도착 가능한 노드들 추가
-//                endNodes[j].addAll(reachableNodes);
-//            }
-//
-//            // 동일한 이동 시간을 갖는 노드들의 교집합 찾기
-//            intersectionNodes = findIntersection(endNodes);
-//        }
-//
-//        System.out.println("timeLimit(분): " + timeLimit / 60);
-//
-//        return intersectionNodes;
+        Set[] endNodes = new Set[startNodes.size()];
+
+        // 선언된 변수 초기화
+        for (int j = 0; j < startNodes.size(); j++) {
+            endNodes[j] = new HashSet<>();
+        }
+
+        // 이동시간 변수 추가 및 초기화
+        double timeLimit = 0;
+
+        List<String> intersectionNodes = new ArrayList<>(); // 동일한 이동 시간을 갖는 노드들의 교집합
+
+        // 반복문의 조건을 교집합의 존재 여부로 변경
+        while (intersectionNodes.isEmpty()) {
+
+            // 이동시간을 10씩 키우며 노드를 탐색
+            timeLimit += 60 * 10;
+
+            for (int j = 0; j < startNodes.size(); j++) {
+                String startNodeId = startNodes.get(j);
+
+                // 도착할 수 있는 노드들을 찾는 함수 호출
+                Set<String> reachableNodes = findReachableNodes(startNodeId, graph, timeLimit);
+
+                // 도착 가능한 노드들 추가
+                endNodes[j].addAll(reachableNodes);
+            }
+
+            // 동일한 이동 시간을 갖는 노드들의 교집합 찾기
+            intersectionNodes = findIntersection(endNodes);
+        }
+
+        System.out.println("timeLimit(분): " + timeLimit / 60);
+
+        return intersectionNodes;
         return null;
     }
 

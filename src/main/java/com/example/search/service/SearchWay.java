@@ -2,6 +2,8 @@ package com.example.search.service;
 
 import com.example.search.controller.model.SearchDetail;
 import com.example.search.domain.Point;
+import com.example.search.domain.car.CGraph;
+import com.example.search.domain.publicTransit.PGraph;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +16,9 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class SearchWay {
 
-    private final SearchCar searchCar;
+    private final CarService carService;
 
-    private final SearchBus searchBus;
-
-    private final SearchSubway searchSubway;
+    private final PublicTransitService publicTransitService;
 
     private final SearchWalking searchWalking;
 
@@ -29,8 +29,9 @@ public class SearchWay {
 
         // car, bus, subway graph 초기화
         // 자동차 그래프, 대중교통 그래프(버스와 지하철 그래프) 생성
-        
-        
+        CGraph cGraph = carService.makeGraph();
+        PGraph pGraph = publicTransitService.makeGraph();
+
         Set[] endNodes = new Set[searchDetails.size()];
 
         for (int i = 0; i < searchDetails.size(); i++) {
@@ -52,13 +53,10 @@ public class SearchWay {
                 // 자동차와 대중교통으로 분리
                 switch (searchDetails.get(i).getVehicle()) {
                     case car:
-                        reachableNodes = searchCar.search(searchDetails.get(i));
+                        reachableNodes = carService.search(cGraph, searchDetails.get(i));
                         break;
-                    case bus:
-                        reachableNodes = searchBus.search(searchDetails.get(i));
-                        break;
-                    case subway:
-                        reachableNodes = searchSubway.search(searchDetails.get(i));
+                    case publicTransit:
+                        reachableNodes = publicTransitService.search(pGraph, searchDetails.get(i));
                         break;
                     default:
                         break;

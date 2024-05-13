@@ -1,5 +1,6 @@
 package com.example.search.service;
 
+import com.example.search.domain.publicTransit.bus.BGraph;
 import com.example.search.domain.publicTransit.bus.Bus;
 import com.example.search.domain.publicTransit.bus.Route;
 import com.example.search.entity.BusRoute;
@@ -12,60 +13,11 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
-public class SearchBus {
+public class BusService {
 
     private final BusRouteRepository busRouteRepository;
 
-    private class Graph {
-
-        Map<String, Bus> busStops;
-
-        Map<String, Map<String, Route>> routes;
-
-        public Graph() {
-            this.busStops = new HashMap<>();
-            this.routes = new HashMap<>();
-        }
-
-        public void addBus(Bus bus) {
-            busStops.put(bus.getNodeId(), bus);
-        }
-
-        public void addRoute(Route route) {
-
-            Map<String, Route> routeMap;
-
-            if (routes.containsKey(route.getRouteId())) {
-                routeMap = routes.get(route.getRouteId());
-            } else {
-                routeMap = new HashMap<>();
-            }
-
-            routeMap.put(route.getNodeId(), route);
-            routes.put(route.getRouteId(), routeMap);
-        }
-    }
-
-    private class NodeQ implements Comparable<NodeQ> {
-
-        Bus bus;
-
-        double time;
-
-        String routeId;
-
-        public NodeQ(String routeId, Bus bus, double time) {
-            this.routeId = routeId;
-            this.bus = bus;
-            this.time = time;
-        }
-
-        @Override
-        public int compareTo(NodeQ o) {
-            return Double.compare(this.time, o.time);
-        }
-    }
-    
+    // 도착 가능한 지점 탐색만
     public void search() {
         long s1 = System.nanoTime();
         Graph graph = makeGraph();
@@ -225,21 +177,21 @@ public class SearchBus {
         return reachableStops;
     }
 
-    private Graph makeGraph() {
+    public BGraph makeGraph() {
 
-        Graph graph = new Graph();
+        BGraph graph = new BGraph();
 
         List<BusRoute> busRouteList = busRouteRepository.findAll();
 
         for (BusRoute busRoute : busRouteList) {
             Bus bus;
 
-            if (!graph.busStops.containsKey(busRoute.getNodeId())) {
+            if (!graph.getBusStops().containsKey(busRoute.getNodeId())) {
                 bus = Bus.builder()
                         .nodeId(busRoute.getNodeId())
                         .build();
             } else {
-                bus = graph.busStops.get(busRoute.getNodeId());
+                bus = graph.getBusStops().get(busRoute.getNodeId());
             }
 
             Route route = Route.builder()
