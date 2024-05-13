@@ -18,6 +18,7 @@ public class SearchWalking {
     private final BusStopRepository busStopRepository; ;
     private final SubwayRepository subwayRepository;
 
+    // 다대다
     public List<Point> searchAToB(List<Point> a, List<Point> b) {
         List<Point> result = new ArrayList<>();
 
