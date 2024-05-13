@@ -1,7 +1,7 @@
 package com.example.search.service;
 
-import com.example.search.domain.Bus;
-import com.example.search.domain.Route;
+import com.example.search.domain.publicTransit.bus.Bus;
+import com.example.search.domain.publicTransit.bus.Route;
 import com.example.search.entity.BusRoute;
 import com.example.search.repository.BusRouteRepository;
 import lombok.RequiredArgsConstructor;

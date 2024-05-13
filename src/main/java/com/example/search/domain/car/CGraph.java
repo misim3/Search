@@ -1,4 +1,4 @@
-package com.example.search.domain;
+package com.example.search.domain.car;
 
 import lombok.Getter;
 

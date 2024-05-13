@@ -1,7 +1,7 @@
 package com.example.search.service;
 
-import com.example.search.domain.SLink;
-import com.example.search.domain.SNode;
+import com.example.search.domain.publicTransit.subway.SLink;
+import com.example.search.domain.publicTransit.subway.SNode;
 import com.example.search.entity.Subway;
 import com.example.search.repository.SubwayRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +26,7 @@ public class SearchSubway {
     }
 
     private class NodeQ implements Comparable<NodeQ> {
+
         String id;
 
         double time;

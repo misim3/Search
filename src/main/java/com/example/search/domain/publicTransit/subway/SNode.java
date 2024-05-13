@@ -1,4 +1,4 @@
-package com.example.search.domain;
+package com.example.search.domain.publicTransit.subway;
 
 import lombok.Builder;
 import lombok.Getter;

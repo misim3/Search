@@ -1,7 +1,7 @@
 package com.example.search.service;
 
-import com.example.search.domain.CLink;
-import com.example.search.domain.CNode;
+import com.example.search.domain.car.CLink;
+import com.example.search.domain.car.CNode;
 import com.example.search.entity.Car;
 import com.example.search.repository.CarRepository;
 import lombok.RequiredArgsConstructor;
