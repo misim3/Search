@@ -1,6 +1,7 @@
 package com.example.search.service;
 
 import com.example.search.domain.Point;
+import com.example.search.domain.Vehicle;
 import com.example.search.repository.BusStopRepository;
 import com.example.search.repository.CarRepository;
 import com.example.search.repository.SubwayRepository;
@@ -19,11 +20,11 @@ public class SearchWalking {
     private final SubwayRepository subwayRepository;
 
     // 다대다
-    public List<Point> searchAToB(List<Point> a, List<Point> b) {
-        List<Point> result = new ArrayList<>();
+    public List<Vehicle> searchAToB(List<Vehicle> a, List<Vehicle> b) {
+        List<Vehicle> result = new ArrayList<>();
 
-        for (Point point : a) {
-            result.addAll(searchOneToList(point, b));
+        for (Vehicle v : a) {
+            result.addAll(searchOneToList(v, b));
         }
 
         return result;
@@ -31,10 +32,10 @@ public class SearchWalking {
 
     // 출발지에서 이동수단별 인접한 노드 탐색
     // 조건은 도보 이동시간 10분 이내
-    public List<Point> searchOneToDB(Point s, String type) {
+    public List<Vehicle> searchOneToDB(Vehicle s) {
 
         // 위도에 따른 1도당 거리 계산
-        double distancePerDegreeLatitude = calculateDistancePerDegree(s.getY());
+        double distancePerDegreeLatitude = calculateDistancePerDegree(s.getLatitude());
         // 경도에 따른 1도당 거리 계산 (위도와 무관)
         // 지구 반지름 대략 6371km
         double distancePerDegreeLongitude = 6371.0 * Math.PI / 180.0;
@@ -42,31 +43,31 @@ public class SearchWalking {
         // 도보로 10분에 이동 가능한 거리 (단위: km)
         double walkingIn10Minutes = 10.0 / 60.0 * 5.0; // 10분을 시간으로 환산하여 km로 변환 (보행 속도: 5 km/h)
 
-        double x1 = s.getX() - (walkingIn10Minutes / distancePerDegreeLongitude);
-        double x2 = s.getX() + (walkingIn10Minutes / distancePerDegreeLongitude);
-        double y1 = s.getY() - (walkingIn10Minutes / distancePerDegreeLatitude);
-        double y2 = s.getY() + (walkingIn10Minutes / distancePerDegreeLatitude);
+        double x1 = s.getLongitude() - (walkingIn10Minutes / distancePerDegreeLongitude);
+        double x2 = s.getLongitude() + (walkingIn10Minutes / distancePerDegreeLongitude);
+        double y1 = s.getLatitude() - (walkingIn10Minutes / distancePerDegreeLatitude);
+        double y2 = s.getLatitude() + (walkingIn10Minutes / distancePerDegreeLatitude);
 
-        switch (type) {
+        switch (s.getType()) {
             case "car":
                 return carRepository.findAllByRange(x1, x2, y1, y2).stream()
-                        .map(car -> Point.builder()
-                                .x(car.getLongitude())
-                                .y(car.getLatitude())
+                        .map(car -> Vehicle.builder()
+                                .longitude(car.getLongitude())
+                                .latitude(car.getLatitude())
                                 .build())
                         .toList();
             case "bus":
                 return busStopRepository.findAllByRange(x1, x2, y1, y2).stream()
-                        .map(busStop -> Point.builder()
-                                .x(busStop.getLongitude())
-                                .y(busStop.getLatitude())
+                        .map(busStop -> Vehicle.builder()
+                                .longitude(busStop.getLongitude())
+                                .latitude(busStop.getLatitude())
                                 .build())
                         .toList();
             case "subway":
                 return subwayRepository.findAllByRange(x1, x2, y1, y2).stream()
-                        .map(subway -> Point.builder()
-                                .x(subway.getLongitude())
-                                .y(subway.getLatitude())
+                        .map(subway -> Vehicle.builder()
+                                .longitude(subway.getLongitude())
+                                .latitude(subway.getLatitude())
                                 .build())
                         .toList();
             default:
@@ -86,21 +87,21 @@ public class SearchWalking {
         return circumference / 360.0;
     }
 
-    public List<Point> searchOneToList(Point s, List<Point> data) {
-        List<Point> result = new ArrayList<Point>();
+    public List<Vehicle> searchOneToList(Vehicle s, List<Vehicle> data) {
+        List<Vehicle> result = new ArrayList<>();
 
         for (int i = 0; i < data.size(); i++) {
-            Point p = data.get(i);
+            Vehicle v = data.get(i);
 
-            if (walkingTime(s, p)) {
-                result.add(p);
+            if (walkingTime(s, v)) {
+                result.add(v);
             }
         }
 
         return result;
     }
 
-    private boolean walkingTime(Point s, Point p) {
+    private boolean walkingTime(Vehicle s, Vehicle p) {
         double distance = calculateDistance(s, p);
         int walkingTime = predictWalkingTime(distance);
 
@@ -119,15 +120,15 @@ public class SearchWalking {
     }
 
     // Haversine 공식 사용
-    private double calculateDistance(Point s, Point p) {
+    private double calculateDistance(Vehicle s, Vehicle v) {
         final int R = 6371; // 지구 반지름 (단위: km)
 
-        double lonDistance = Math.toRadians(p.getX() - s.getX());
-        double latDistance = Math.toRadians(p.getY() - s.getY());
+        double longDistance = Math.toRadians(v.getLongitude() - s.getLongitude());
+        double latDistance = Math.toRadians(v.getLatitude() - s.getLatitude());
 
         double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-                + Math.cos(Math.toRadians(s.getX())) * Math.cos(Math.toRadians(p.getX()))
-                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+                + Math.cos(Math.toRadians(s.getLongitude())) * Math.cos(Math.toRadians(v.getLongitude()))
+                * Math.sin(longDistance / 2) * Math.sin(longDistance / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         return R * c;
