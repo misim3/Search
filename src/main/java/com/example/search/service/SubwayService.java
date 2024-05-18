@@ -34,11 +34,14 @@ public class SubwayService {
 
         // 시작점의 정보를 입력
         List<Vehicle> initNode = searchWalking.searchOneToDB(start);
-        
-        solution.put(startNodeId, 0d);
-        SNodeQ ndq = new SNodeQ(startNodeId, solution.get(startNodeId), sGraph.getSubways().get(startNodeId).getSubwayRouteName());
-        currentQueue.add(ndq);
-        visitedStops.add(startNodeId);
+
+        initNode.forEach(i -> solution.put(i.getId(), searchWalking.getWalkingTime(start, i)));
+
+        initNode.forEach(i -> currentQueue.add(new SNodeQ(i.getId(), solution.get(i.getId()), sGraph.getSubways().get(i.getId()).getSubwayRouteName())));
+
+        initNode.forEach(i -> visitedStops.add(i.getId()));
+
+        SNodeQ ndq = null;
 
         while (!currentQueue.isEmpty()) {
             SNodeQ currentNodeQ = currentQueue.poll();

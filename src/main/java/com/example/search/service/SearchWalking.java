@@ -1,6 +1,5 @@
 package com.example.search.service;
 
-import com.example.search.domain.Point;
 import com.example.search.domain.Vehicle;
 import com.example.search.repository.BusStopRepository;
 import com.example.search.repository.CarRepository;
@@ -99,6 +98,11 @@ public class SearchWalking {
         }
 
         return result;
+    }
+
+    public double getWalkingTime(Vehicle s, Vehicle p) {
+        double distance = calculateDistance(s, p);
+        return predictWalkingTime(distance);
     }
 
     private boolean walkingTime(Vehicle s, Vehicle p) {

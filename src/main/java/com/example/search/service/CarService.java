@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -35,10 +34,13 @@ public class CarService {
         // 시작점의 정보를 입력
         List<Vehicle> initNode = searchWalking.searchOneToDB(start);
 
-        solution.put(startNodeId, 0d);
-        CNodeQ ndq = new CNodeQ(startNodeId, solution.get(startNodeId));
-        currentQueue.add(ndq);
-        visitedNodes.add(startNodeId);
+        initNode.forEach(i -> solution.put(i.getId(), searchWalking.getWalkingTime(start, i)));
+
+        initNode.forEach(i -> currentQueue.add(new CNodeQ(i.getId(), solution.get(i.getId()))));
+
+        initNode.forEach(i -> visitedNodes.add(i.getId()));
+
+        CNodeQ ndq = null;
 
         while (!currentQueue.isEmpty()) {
             CNodeQ currentNodeQ = currentQueue.poll();
