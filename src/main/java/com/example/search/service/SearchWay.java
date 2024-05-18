@@ -60,7 +60,7 @@ public class SearchWay {
                     case "car":
                         reachableNodes = carService.search(cGraph, convertAddress(searchDetails.get(i)), timeLimit);
                         break;
-                    case "publicTransit":
+                    case "bus", "subway":
                         reachableNodes = publicTransitService.search(pGraph, convertAddress(searchDetails.get(i)), timeLimit);
                         break;
                     default:
