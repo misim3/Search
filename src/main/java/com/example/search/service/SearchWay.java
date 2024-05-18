@@ -4,17 +4,22 @@ import com.example.search.controller.model.SearchDetail;
 import com.example.search.domain.Vehicle;
 import com.example.search.domain.car.CGraph;
 import com.example.search.domain.publicTransit.PGraph;
+import com.google.maps.GeoApiContext;
+import com.google.maps.GeocodingApi;
+import com.google.maps.model.GeocodingResult;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class SearchWay {
+
+    @Value("${google.maps.api.key}")
+    private String googleMapsApiKey;
 
     private final CarService carService;
 
@@ -32,10 +37,10 @@ public class SearchWay {
         CGraph cGraph = carService.makeGraph();
         PGraph pGraph = publicTransitService.makeGraph();
 
-        Set[] endNodes = new Set[searchDetails.size()];
+        List<List<Vehicle>> endNodes = new ArrayList<>(searchDetails.size());
 
         for (int i = 0; i < searchDetails.size(); i++) {
-            endNodes[i] = new HashSet<>();
+            endNodes.set(i, new ArrayList<>());
         }
 
         double timeLimit = 0;
@@ -62,8 +67,7 @@ public class SearchWay {
                         break;
                 }
 
-                endNodes[i].addAll(reachableNodes);
-
+                endNodes.set(i, reachableNodes);
             }
 
             intersections = findIntersection(endNodes);
@@ -76,20 +80,39 @@ public class SearchWay {
     private Vehicle convertAddress(SearchDetail searchDetail) {
         // 구글 좌표 변환 api 요청으로 위경도 좌표 변환
 
+        try {
+            String a = "대한민국 " + searchDetail.getAddress();
+            GeoApiContext context = new GeoApiContext.Builder()
+                    .apiKey(googleMapsApiKey)
+                    .build();
 
-        return Vehicle.builder()
-                .type(searchDetail.getVehicle())
-                .latitude()
-                .longitude()
-                .build();
+            GeocodingResult[] results = GeocodingApi.geocode(context, a)
+                    .region("kr")
+                    .await();
+            if (results.length > 0) {
+                GeocodingResult result = results[0];
+                double latitude = result.geometry.location.lat;
+                double longitude = result.geometry.location.lng;
+
+                return Vehicle.builder()
+                        .type(searchDetail.getVehicle())
+                        .latitude(latitude)
+                        .longitude(longitude)
+                        .build();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
-    private List<Vehicle> findIntersection(Set[] endNodes) {
+    private List<Vehicle> findIntersection(List<List<Vehicle>> endNodes) {
         // 다대다
 
         List<Vehicle> res = new ArrayList<>();
 
-        for (Set<Vehicle> list : endNodes) {
+        for (List<Vehicle> list : endNodes) {
             if (res.isEmpty()) {
                 res = list;
             } else {
