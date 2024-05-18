@@ -90,7 +90,10 @@ public class SubwayService {
         }
 
         return reachableNodes.stream()
-                .map(r -> Vehicle.builder().build())
+                .map(r -> Vehicle.builder()
+                        .longitude(sGraph.getSubways().get(r).getLongitude())
+                        .latitude(sGraph.getSubways().get(r).getLatitude())
+                        .build())
                 .toList();
     }
 

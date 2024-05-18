@@ -77,7 +77,10 @@ public class CarService {
         }
 
         return reachableNodes.stream()
-                .map(r -> Vehicle.builder().build())
+                .map(r -> Vehicle.builder()
+                        .longitude(cGraph.getNodes().get(r).getLongitude())
+                        .latitude(cGraph.getNodes().get(r).getLatitude())
+                        .build())
                 .toList();
     }
 

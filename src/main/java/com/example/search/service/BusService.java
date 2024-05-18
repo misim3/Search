@@ -95,7 +95,10 @@ public class BusService {
         }
 
         return reachableStops.stream()
-                .map(r -> Vehicle.builder().build())
+                .map(r -> Vehicle.builder()
+                        .longitude(bGraph.getBusStops().get(r).getLongitude())
+                        .latitude(bGraph.getBusStops().get(r).getLatitude())
+                        .build())
                 .toList();
     }
 
