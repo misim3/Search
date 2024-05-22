@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Entity
@@ -21,11 +22,12 @@ public class BusStop {
 
     private Integer cityCode;
 
+    @Setter
     private Double latitude;
 
+    @Setter
     private Double longitude;
 
-    @Builder
     public BusStop(String nodeId, int cityCode) {
         this.nodeId = nodeId;
         this.cityCode = cityCode;

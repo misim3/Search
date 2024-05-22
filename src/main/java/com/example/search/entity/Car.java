@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Entity
@@ -23,8 +24,10 @@ public class Car {
 
     private Double time;
 
+    @Setter
     private Double longitude;
 
+    @Setter
     private Double latitude;
 
     @Builder
