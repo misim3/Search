@@ -31,13 +31,15 @@ public class StoreBus {
 
     public void storeData() throws Exception {
 
-        storeCity();
+        //storeCity();
 
-        storeBusStop();
+        //storeBusStop();
 
         storeBusRoute();
 
         storeBusRouteDetail();
+
+        System.out.println("Done");
     }
 
     private void storeCity() throws Exception {
@@ -118,23 +120,32 @@ public class StoreBus {
             if (item != null) {
                 // 필요한 정보 추출
                 String nodeId = item.getElementsByTagName("nodeid").item(0).getTextContent();
-                //String gpslati = item.getElementsByTagName("gpslati").item(0).getTextContent();
-                //String gpslong = item.getElementsByTagName("gpslong").item(0).getTextContent();
+                String gpslati = item.getElementsByTagName("gpslati").item(0).getTextContent();
+                String gpslong = item.getElementsByTagName("gpslong").item(0).getTextContent();
 
-                findOrCreateBusStop(nodeId, cityCode);
+                findOrCreateBusStop(nodeId, cityCode, gpslati, gpslong);
             }
         }
     }
 
-    private void findOrCreateBusStop(String nodeId, int cityCode) {
+    private void findOrCreateBusStop(String nodeId, int cityCode, String gpslati, String gpslong) {
 
         if (!busStopRepository.existsByCityCodeAndNodeId(cityCode, nodeId)) {
             BusStop busStop = BusStop.builder()
                     .nodeId(nodeId)
                     .cityCode(cityCode)
+                    .latitude(Double.valueOf(gpslati))
+                    .longitude(Double.valueOf(gpslong))
                     .build();
 
             busStopRepository.save(busStop);
+        } else {
+            BusStop busStop = busStopRepository.findByCityCodeAndNodeId(cityCode, nodeId);
+            if (busStop.getId() > 14956) {
+                busStop.setLongitude(Double.valueOf(gpslong));
+                busStop.setLatitude(Double.valueOf(gpslati));
+                busStopRepository.save(busStop);
+            }
         }
     }
 
@@ -192,7 +203,7 @@ public class StoreBus {
 
     private void storeBusRouteDetail() throws Exception {
 
-        List<BusRoute> busRoutes = busRouteRepository.findAllByCityCodeAndNodeIdIsNullAndNodeOrdIsNull(31050);
+        List<BusRoute> busRoutes = busRouteRepository.findAllByCityCodeAndNodeIdIsNullAndNodeOrdIsNull(31020);
 
         for (BusRoute busRoute : busRoutes) {
 
