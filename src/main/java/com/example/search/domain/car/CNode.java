@@ -12,8 +12,8 @@ import java.util.List;
 public class CNode {
 
     private String nodeId;
-    private double latitude;
-    private double longitude;
+    private Double latitude;
+    private Double longitude;
 
     List<CLink> adj;
 
@@ -24,7 +24,7 @@ public class CNode {
     }
 
     @Builder
-    public CNode(String nodeId, double latitude, double longitude) {
+    public CNode(String nodeId, Double latitude, Double longitude) {
         this.nodeId = nodeId;
         this.latitude = latitude;
         this.longitude = longitude;

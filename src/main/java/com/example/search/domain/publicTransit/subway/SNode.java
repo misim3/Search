@@ -15,13 +15,13 @@ public class SNode {
 
     private String subwayRouteName;
 
-    private double latitude;
-    private double longitude;
+    private Double latitude;
+    private Double longitude;
 
     List<SLink> adj;
 
     @Builder
-    public SNode(String subwayId, String subwayRouteName, double latitude, double longitude) {
+    public SNode(String subwayId, String subwayRouteName, Double latitude, Double longitude) {
         this.subwayId = subwayId;
         this.subwayRouteName = subwayRouteName;
         this.latitude = latitude;

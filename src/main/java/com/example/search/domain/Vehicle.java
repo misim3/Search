@@ -10,12 +10,12 @@ public class Vehicle {
 
     private String id;
 
-    private double latitude;
+    private Double latitude;
 
-    private double longitude;
+    private Double longitude;
 
     @Builder
-    public Vehicle(String type, String id, double latitude, double longitude) {
+    public Vehicle(String type, String id, Double latitude, Double longitude) {
         this.type = type;
         this.id = id;
         this.latitude = latitude;

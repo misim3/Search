@@ -6,11 +6,11 @@ import lombok.Getter;
 @Getter
 public class Point {
 
-    private double x;
-    private double y;
+    private Double x;
+    private Double y;
 
     @Builder
-    public Point(double x, double y) {
+    public Point(Double x, Double y) {
         this.x = x;
         this.y = y;
     }

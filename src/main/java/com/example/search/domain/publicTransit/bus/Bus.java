@@ -13,13 +13,13 @@ public class Bus {
 
     private String nodeId;
 
-    private double latitude;
-    private double longitude;
+    private Double latitude;
+    private Double longitude;
 
     private Map<String, Route> routes;
 
     @Builder
-    public Bus(String nodeId, double longitude, double latitude) {
+    public Bus(String nodeId, Double longitude, Double latitude) {
         this.nodeId = nodeId;
         this.longitude = longitude;
         this.latitude = latitude;
