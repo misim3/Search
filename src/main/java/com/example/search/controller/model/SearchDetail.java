@@ -15,6 +15,6 @@ public class SearchDetail {
     @Schema(name = "address", description = "모임원 출발 주소로 지번 주소로 입력해야 한다.", example = "인천광역시 연수구 인천타워대로 155", requiredMode = Schema.RequiredMode.REQUIRED)
     private String address;
 
-    @Schema(name = "vehicle", description = "이동수단 정보로 car, bus, subway만 가능하다.", example = "car", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(name = "vehicle", description = "이동수단 정보로 car, public 만 가능하다.", example = "car", requiredMode = Schema.RequiredMode.REQUIRED)
     private String vehicle;
 }
