@@ -35,12 +35,6 @@ public class SearchController {
         // 중간 지점 탐색
         List<Vehicle> searchLists = searchWay.search(request.getSearchDetails());
 
-//        System.out.println("중간 지점 갯수: " + searchLists.size());
-//        for (Vehicle vehicle : searchLists) {
-//            System.out.println("중간 지점 식별 정보: "+ vehicle.getId());
-//        }
-//
-//        System.out.println("------------------------------");
         // 중간 지점 선별
         List<Point> res = kMedoids.cluster(3,
                 searchLists.stream()
@@ -48,16 +42,9 @@ public class SearchController {
                 .toList(),
                 100);
 
-//        for (Point point : res) {
-//            System.out.println("선별된 중간 장소 위도 " + point.getY());
-//            System.out.println("선별된 중간 장소 경도 " + point.getX());
-//        }
-
-        
-
         // 그리고 나서 탐색 결과 반환
         return SearchResponse.builder()
-                .addresses(null)
+                .addresses(res.stream().map(searchWay::convertLLToAddress).toList())
                 .build();
     }
 }
