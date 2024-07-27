@@ -13,6 +13,8 @@ Java 17, spring boot, spring data jpa, MySQL, AWS EC2
 ![캡디아키텍처 drawio](https://github.com/user-attachments/assets/69ce3992-6f9d-46aa-a17b-feb0b4fb7b5f)
 <br/>
 
+## [ERD](https://github.com/misim3/Search/wiki/ERD)
+
 ## 주요 기능
  - **중간 지점 탐색:**
    - 모든 모임원의 출발 장소에서 비슷한 이동 시간이 소요되는 노드 탐색
@@ -23,4 +25,4 @@ Java 17, spring boot, spring data jpa, MySQL, AWS EC2
 #### 중간 지점 선별 기준: 접근성과 상권 발달의 상관 관계 고려하여 번화가 인근
 <br/>
 
-## 기술적 이슈와 해결 과정
+## [비즈니스 로직](https://github.com/misim3/Search/wiki/%EB%B9%84%EC%A6%88%EB%8B%88%EC%8A%A4-%EB%A1%9C%EC%A7%81)
