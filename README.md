@@ -23,3 +23,4 @@ Java 17, spring boot, spring data jpa, MySQL, AWS EC2
 #### 중간 지점 선별 기준: 접근성과 상권 발달의 상관 관계 고려하여 번화가 인근
 <br/>
 
+## 기술적 이슈와 해결 과정
