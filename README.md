@@ -10,6 +10,7 @@ Java 17, spring boot, spring data jpa, MySQL, AWS EC2
 <br/>
 
 ## 서버 구성도
+![캡디아키텍처 drawio](https://github.com/user-attachments/assets/69ce3992-6f9d-46aa-a17b-feb0b4fb7b5f)
 <br/>
 
 ## 주요 기능
